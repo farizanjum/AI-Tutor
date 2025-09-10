@@ -1,10 +1,10 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { GoogleGenerativeAI } from "@google/generative-ai"
 
-const API_KEY = process.env.GEMINI_API_KEY || "AIzaSyA2C-fl_4OAsdo8bBibSfR5Mw48EEKyIBU"
+const API_KEY = process.env.GEMINI_API_KEY
 
 if (!API_KEY) {
-  throw new Error("GEMINI_API_KEY is not set")
+  throw new Error("GEMINI_API_KEY environment variable is required but not set")
 }
 
 const genAI = new GoogleGenerativeAI(API_KEY)
@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     console.log("[v0] Generating flashcards for topic:", topic, "difficulty:", difficulty, "count:", count)
 
     const model = genAI.getGenerativeModel({
-      model: "gemini-2.0-flash-exp",
+      model: "gemini-1.5-flash",
       generationConfig: {
         temperature: 0.7,
         maxOutputTokens: 1000,

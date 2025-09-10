@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
+import { callGemini } from "../../../lib/gemini"
 
 const SYSTEM_PROMPT = `You are Personalized Tutor — a safe, pedagogically sound AI tutor for personalized learning experiences. Your goals:  
 1. Diagnose the learner's current level quickly and non-judgmentally.  
@@ -30,41 +31,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Message is required" }, { status: 400 })
     }
 
-    // Build conversation context
-    const messages = [
-      { role: "user", parts: [{ text: SYSTEM_PROMPT }] },
-      ...conversationHistory.map((msg: any) => ({
-        role: msg.role === "assistant" ? "model" : "user",
-        parts: [{ text: msg.content }],
-      })),
-      { role: "user", parts: [{ text: message }] },
-    ]
+    // Build lightweight conversation history for callGemini
+    const conversation = (conversationHistory || []).map((msg: any) => ({
+      role: msg.role,
+      content: msg.content,
+    }))
 
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${process.env.GEMINI_API_KEY}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          contents: messages,
-          generationConfig: {
-            temperature: 0.3,
-            topK: 40,
-            topP: 0.95,
-            maxOutputTokens: 800,
-          },
-        }),
-      },
-    )
-
-    if (!response.ok) {
-      throw new Error(`Gemini API error: ${response.status}`)
-    }
-
-    const data = await response.json()
-    const responseText = data.candidates[0].content.parts[0].text
+    // Use centralized Gemini helper which uses the official SDK and better error handling
+    const responseText = await callGemini(message, conversation)
 
     return NextResponse.json({
       response: responseText,
