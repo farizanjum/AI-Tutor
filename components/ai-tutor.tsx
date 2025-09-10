@@ -318,19 +318,14 @@ export function AiTutor() {
 
   return (
     <div className="space-y-6">
-      <Card className="bg-gradient-to-br from-purple-600/10 to-blue-600/10 border-purple-500/20">
+      <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-3">
-            <div className="relative">
-              <Brain className="h-6 w-6 text-purple-400" />
-              <div className="absolute -top-1 -right-1 h-3 w-3 bg-blue-400 rounded-full animate-pulse"></div>
-            </div>
-            <span className="bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent font-bold">
-              IntelliLearn AI
-            </span>
+          <CardTitle className="flex items-center gap-2">
+            <Brain className="h-5 w-5" />
+            AI Tutor
           </CardTitle>
-          <CardDescription className="text-gray-600">
-            🚀 Advanced AI-powered learning assistant for personalized education and skill development
+          <CardDescription>
+            Get personalized help, explanations, and practice problems from your AI tutor
           </CardDescription>
         </CardHeader>
       </Card>
